@@ -1,0 +1,28 @@
+import pandas as pd
+
+list = []
+valuelist = []
+
+with open("Liander_kleinverbruiksgegevens_01012009.csv") as fIn, open("2009.csv", "w") as fOut:
+    for line in fIn:
+        if "WOONPLAATS" in line:
+            list.append(line)
+        elif "AMSTERDAM" in line:
+            valuelist.append(line)
+    
+    for i in range(len(list)):
+        if list[i].find(','):
+            list[i] = list[i].replace(',', '.')
+        if list[i].find('\t'):
+            list[i] = list[i].replace('\t', ',')
+            fOut.write(list[i])
+            
+    for i in range(len(valuelist)):
+        if valuelist[i].find(','):
+            valuelist[i] = valuelist[i].replace(',', '.')
+        if valuelist[i].find('\t'):
+            valuelist[i] = valuelist[i].replace('\t', ',')
+            fOut.write(valuelist[i])
+
+data = pd.read_csv("2009.csv", engine="python")
+print(data)
