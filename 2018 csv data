@@ -1,0 +1,25 @@
+with open("LianderKV01012018.csv") as fIn, open("2018.csv", "w") as fOut:
+    for line in fIn:
+        linelist = list(line)
+        for char in range(len(linelist)):
+            if char == 0 and linelist[char] == ";":
+                fOut.write('0')
+            if linelist[char] == ';' and linelist[char - 1] == ';':
+                fOut.write('0,')
+            elif linelist[char] == ';':
+                fOut.write(',')
+            elif linelist[char] == ',':
+                fOut.write('.')
+            else:
+                fOut.write(linelist[char])
+            if char == len(linelist) - 2 and linelist[char] == ";":
+                fOut.write('0')
+                
+with open("2018.csv") as fIn:
+    for line in fIn:
+        print(line)
+                
+import pandas as pd
+
+data = pd.read_csv("2018.csv", engine="python")
+print(data)
