@@ -86,27 +86,43 @@ def genereer_2009():
         with open(csv_naam, "w") as fOut:
             with open(bestandsnaam) as fIn:
                 # het csv bestand wordt in een geschikt csv bestand omgezet
-                list = []
-                valuelist = []
-                for line in fIn:
-                    if "WOONPLAATS" in line:
-                        list.append(line)
-                    elif "AMSTERDAM" in line:
-                        valuelist.append(line)
+#                 list = []
+#                 valuelist = []
+#                 for line in fIn:
+#                     if "WOONPLAATS" in line:
+#                         list.append(line)
+#                     elif "AMSTERDAM" in line:
+#                         valuelist.append(line)
                 
-                for i in range(len(list)):
-                    if list[i].find(','):
-                        list[i] = list[i].replace(',', '.')
-                    if list[i].find('\t'):
-                        list[i] = list[i].replace('\t', ',')
-                        fOut.write(list[i])
+#                 for i in range(len(list)):
+#                     if list[i].find(','):
+#                         list[i] = list[i].replace(',', '.')
+#                     if list[i].find('\t'):
+#                         list[i] = list[i].replace('\t', ',')
+#                         fOut.write(list[i])
                         
-                for i in range(len(valuelist)):
-                    if valuelist[i].find(','):
-                        valuelist[i] = valuelist[i].replace(',', '.')
-                    if valuelist[i].find('\t'):
-                        valuelist[i] = valuelist[i].replace('\t', ',')
-                        fOut.write(valuelist[i])
+#                 for i in range(len(valuelist)):
+#                     if valuelist[i].find(','):
+#                         valuelist[i] = valuelist[i].replace(',', '.')
+#                     if valuelist[i].find('\t'):
+#                         valuelist[i] = valuelist[i].replace('\t', ',')
+#                         fOut.write(valuelist[i])
+                        
+                for line in fIn:
+                    linelist = list(line)
+                    for char in range(len(linelist)):
+                        if char == 0 and linelist[char] == "\t":
+                            fOut.write('0')
+                        if linelist[char] == '\t' and linelist[char - 1] == '\t':
+                            fOut.write('0,')
+                        elif linelist[char] == '\t':
+                            fOut.write(',')
+                        elif linelist[char] == ',':
+                            fOut.write('.')
+                        else:
+                            fOut.write(linelist[char])
+                        if char == len(linelist) - 2 and linelist[char] == "\t":
+                            fOut.write('0')
                 
                 # voor elk jaar wordt een dataframe gemaakt met een extra collumnv voor het aantal
                 if jaar == "2009":
