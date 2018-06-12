@@ -1,0 +1,99 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("data_concat.csv", engine="python")
+
+def Calcaverage(Kol):
+    avg = 0
+    for n in range(len(data[Kol])):
+        avg = avg + data[Kol][n]
+    return avg / len(data[Kol])
+
+def Calcaverageif(Kol1, Kol2, condit):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol1])):
+        if data[Kol2][n] == condit:
+            avg = avg + data[Kol1][n]
+            freq = freq + 1
+    return avg / freq
+
+def Calcaverageifif(Kol, Kol1, condit1, Kol2, condit2):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol])):
+        if data[Kol1][n] == condit1 and data[Kol2][n] == condit2:
+            avg = avg + data[Kol][n]
+            freq = freq + 1
+    return avg / freq
+
+def Calcaveragekol(Kol, Kol1):
+    avglist = []
+    allkol1 = Showall(Kol1)
+    for thing in allkol1:
+        avgg = Calcaverageif(Kol1, "Jaar", thing)
+        avglist.append(avgg)
+    return avglist
+
+def Calcaveragekolif(Kol, Kol1, Kol2, condit):
+    avglist = []
+    allkol1 = Showall(Kol1)
+    for thing in allkol1:
+        avgg = Calcaverageifif(Kol, "Jaar", thing, Kol2, condit)
+        avglist.append(avgg)
+    return avglist
+
+def Showall(Kol):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n] not in members:
+            members.append(data[Kol][n])
+    return members
+
+def Standaardafwijking(Kol):
+    avg = Calcaverage(Kol)
+    std = 0
+    for n in range(len(data[Kol])):
+        std = std + (avg - data[Kol][n])**2
+    sa = std/len(data[Kol])
+    return sa**0.5
+
+def TVariantie(values):
+    var = TStandaardafwijking(values)
+    return var**2
+
+def TCalcaverage(values):
+    avg = 0
+    for n in range(len(values)):
+        avg = avg + values[n]
+    return avg / len(values)
+
+def TStandaardafwijking(values):
+    avg = TCalcaverage(values)
+    std = 0
+    for n in range(len(values)):
+        std = std + (avg - values[n])**2
+    sa = std/len(values)
+    return sa**0.5
+
+def makegraph(xas, yas, Titel, xdata, ydata, naam, figuren):
+    plt.figure(figuren)
+    plt.plot(ydata, xdata)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+#print(Calcaverage("SJV"))
+#Calcaverageif("SJV", "Jaar", "2017")
+#Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2017)
+#Calcaverageif("Gemiddeld aantal telwielen", "PRODUCTSOORT", "ELK")
+#print(Showall("Jaar"))
+#print(TStandaardafwijking([3,7998767675,6453533,65,999,6442,0]))
+#print(Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2009))
+#print(Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"))
+makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelksjvperjaar", 1)
+makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemgassjvperjaar", 2)
+makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
