@@ -43,11 +43,31 @@ def Calcaveragekolif(Kol, Kol1, Kol2, condit):
         avglist.append(avgg)
     return avglist
 
+def Calcaveragepc(Kol, Kol1, PCs, start, end):
+    avglist = []
+    for pc in PCs:
+        avg = 0
+        freq = 0
+        for n in range(len(data[Kol])):
+            if data[Kol1][n][start:end] == pc:
+                avg = avg + data[Kol][n]
+                freq = freq + 1
+        avglist.append(avg / freq)
+    return avglist
+
+
 def Showall(Kol):
     members = []
     for n in range(len(data[Kol])):
         if data[Kol][n] not in members:
             members.append(data[Kol][n])
+    return members
+
+def Showallpart(Kol, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members:
+            members.append(data[Kol][n][start:end])
     return members
 
 def Standaardafwijking(Kol):
@@ -85,6 +105,19 @@ def makegraph(xas, yas, Titel, xdata, ydata, naam, figuren):
     savef = naam + ".png"
     plt.savefig(savef)
 
+def makebar(xas, yas, Titel, x, y, naam, figuren, width, kleur):
+    plt.figure(figuren)
+    plt.bar(x, y, width, color=kleur)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+
+#def getpostcodes():
+    #with open(gempostcode.csv, w) as fOut:
+
 #print(Calcaverage("SJV"))
 #Calcaverageif("SJV", "Jaar", "2017")
 #Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2017)
@@ -93,7 +126,10 @@ def makegraph(xas, yas, Titel, xdata, ydata, naam, figuren):
 #print(TStandaardafwijking([3,7998767675,6453533,65,999,6442,0]))
 #print(Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2009))
 #print(Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"))
-makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelksjvperjaar", 1)
-makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemgassjvperjaar", 2)
-makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
-makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelksjvperjaar", 1)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemgassjvperjaar", 2)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+#print(Showallpart("POSTCODE_VAN", 0, 4))
+#print(Calcaveragepc("SJV", "POSTCODE_VAN", Showallpart("POSTCODE_VAN", 0, 4), 0, 4))
+#makebar("postcodes", "gemiddeld SJV", "gemiddeld SJV per postcode", Showallpart("POSTCODE_VAN", 0, 4) , Calcaveragepc("SJV", "POSTCODE_VAN", Showallpart("POSTCODE_VAN", 0, 4), 0, 4), "barpostcodes", 4, 1, "blue")
