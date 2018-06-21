@@ -8,7 +8,7 @@ from bokeh.models import (
     LinearColorMapper,
     ColorBar
 )
-from bokeh.palettes import Viridis11 as palette
+from bokeh.palettes import Viridis8 as palette
 from bokeh.plotting import figure
 
 
