@@ -1,0 +1,56 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("data_concat.csv", engine="python")
+
+def Showallpartifif(Kol, Kol1, condit1, Kol2, condit2, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members and data[Kol1][n] == condit1 and data[Kol2][n] == condit2:
+            members.append(data[Kol][n][start:end])
+    return members
+
+def Showallpart(Kol, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members:
+            members.append(data[Kol][n][start:end])
+    return members
+
+def mergelistnd(List1, List2):
+    for item in List2:
+        if item not in List1 and int(item) < 1100:
+            List1.append(item)
+    return List1
+
+def Showall(Kol):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n] not in members:
+            members.append(data[Kol][n])
+    return members
+
+with open("postcodewerkans.csv", "w") as fDennis:
+    fDennis.write("POSTCODE,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018")
+    fDennis.write("\n")
+    PV = Showallpart("POSTCODE_VAN", 0, 4)
+    PT = Showallpart("POSTCODE_TOT", 0, 4)
+    for PC in mergelistnd(PV, PT):
+        print(PC)
+        fDennis.write(PC)
+        fDennis.write(",")
+        for Jaar in Showall("Jaar"):
+            ans = 0
+            for n in range(len(data["POSTCODE_VAN"])):
+                if data["POSTCODE_VAN"][n][0:4] == PC and data["POSTCODE_TOT"][n][0:4] == PC and data["Jaar"][n] == Jaar:
+                    ans = ans + (data["Aantal Aansluitingen"][n] * data["Fysieke status"][n] / 100)
+                elif data["POSTCODE_VAN"][n][0:4] == PC and data["Jaar"][n] == Jaar:
+                    ans = ans + (data["Aantal Aansluitingen"][n] * data["Fysieke status"][n] / 200)
+                elif data["POSTCODE_TOT"][n][0:4] == PC and data["Jaar"][n] == Jaar:
+                    ans = ans + (data["Aantal Aansluitingen"][n] * data["Fysieke status"][n] / 200)
+            if Jaar != 2018:
+                fDennis.write(str(round(ans)))
+                fDennis.write(",")
+            else:
+                fDennis.write(str(round(ans)))
+        fDennis.write("\n")
