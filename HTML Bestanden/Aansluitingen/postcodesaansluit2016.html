@@ -56,5 +56,96 @@
             else document.addEventListener("DOMContentLoaded", fn);
           })();
         </script>
+        <style>
+          .dropbtn {
+              background-color: #3498DB;
+              color: white;
+              padding: 16px;
+              font-size: 16px;
+              border: none;
+              cursor: pointer;
+          }
+          
+          .dropbtn:hover, .dropbtn:focus {
+              background-color: #2980B9;
+          }
+          
+          .dropdown {
+              position: absolute;
+              top: 36px;
+              right: 500px;
+              display: inline-block;
+          }
+          
+          .dropdown-content {
+              display: none;
+              position: absolute;
+              background-color: #f1f1f1;
+              min-width: 160px;
+              overflow: auto;
+              box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+              z-index: 1;
+          }
+          
+          .dropdown-content a {
+              color: black;
+              padding: 12px 16px;
+              text-decoration: none;
+              display: block;
+          }
+          
+          .dropdown a:hover {background-color: #ddd;}
+          
+          .show {display: block;}
+          </style>
+        <div class="dropdown">
+        <button onclick="myFunction()"  class="dropbtn">Type Data</button>
+          <div id="myDropdown" class="dropdown-content">
+            <a href="HTML%20Bestanden/SJV Elk/postcodesjvelk2009.html">Gemiddeld SJV Elk</a>
+            <a href="HTML%20Bestanden/SJV Gas/postcodesjvgas2009.html">Gemiddeld SJV Gas</a>
+            <a href="HTML%20Bestanden/Aansluitingen /postcodesaansluit2009.html">Totaal aantal aansluitingen</a>
+            <a href="HTML%20Bestanden/Terugleverende Aansluitingen/postcodeszon2009.html">Totaal aantal terugleverende aansluitingen</a>
+            <a href="HTML%20Bestanden/Werkende Aansluitingen/postcodewerkans2009.html">Totaal aantal werkende aansluitingen</a>
+            <a href="HTML%20Bestanden/%Werkende Aansluitingen/postcodewerkanspercentage2009.html">Percentage werkende aansluitingen</a>
+            <a href="HTML%20Bestanden/%Terugleverende Aansluitingen/postcodeszonpercentage2009.html">Percentage terugleverende aansluitingen</a>
+            <a href="HTML%20Bestanden/Verschil Aansluitingen/verschilpostcodesaansluit2009.html">Verschil in aansluitngen</a>
+            <a href="HTML%20Bestanden/Verschil Terugleverende Aansluitingen/verschilpostcodeszon2009.html">Verschil in terugleverende aansluitngen</a>
+          </div>
+        </div>
+        </div>
+        
+        <script>
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        
+        window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+        
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+              }
+            }
+          }
+        }
+        </script>
+        <img src="Jaarbuttons.png" usemap="#image-map">
+        
+        <map name="image-map">
+            <area target="" alt="2009" title="2009" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2009.html" coords="0,0,59,30" shape="rect">
+            <area target="" alt="2010" title="2010" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2010.html" coords="58,0,117,29" shape="rect">
+            <area target="" alt="2011" title="2011" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2011.html" coords="117,1,175,31" shape="rect">
+            <area target="" alt="2012" title="2012" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2012.html" coords="175,1,232,31" shape="rect">
+            <area target="" alt="2013" title="2013" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2013.html" coords="232,0,290,29" shape="rect">
+            <area target="" alt="2014" title="2014" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2014.html" coords="289,0,348,30" shape="rect">
+            <area target="" alt="2015" title="2015" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2015.html" coords="347,1,405,31" shape="rect">
+            <area target="" alt="2016" title="2016" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2016.html" coords="405,1,462,31" shape="rect">
+            <area target="" alt="2017" title="2017" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2017.html" coords="462,3,520,31" shape="rect">
+            <area target="" alt="2018" title="2018" href="HTML%20Bestanden/Aansluitingen/postcodesaansluit2018.html" coords="518,1,578,31" shape="rect">
+        </map>
     </body>
 </html>
