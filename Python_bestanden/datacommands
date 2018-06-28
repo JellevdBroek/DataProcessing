@@ -1,0 +1,350 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from bokeh.plotting import figure
+from bokeh.io import output_file, show
+from bokeh.models import DataRange1d
+from bokeh.models import PanTool, ResetTool, WheelZoomTool, HoverTool, LassoSelectTool, BoxSelectTool
+from bokeh.models import (
+    ColumnDataSource,
+    HoverTool,
+    LogColorMapper
+)
+
+data = pd.read_csv("data_concat.csv", engine="python")
+
+def Calcaverage(Kol):
+    avg = 0
+    for n in range(len(data[Kol])):
+        avg = avg + data[Kol][n]
+    return avg / len(data[Kol])
+
+def Calcaverageif(Kol1, Kol2, condit):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol1])):
+        if data[Kol2][n] == condit:
+            avg = avg + data[Kol1][n]
+            freq = freq + 1
+    return avg / freq
+
+def Calcaverageifif(Kol, Kol1, condit1, Kol2, condit2):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol])):
+        if data[Kol1][n] == condit1 and data[Kol2][n] == condit2:
+            avg = avg + data[Kol][n]
+            freq = freq + 1
+    return avg / freq
+
+def Calcaverageififpc(Kol, Kol1, condit1, Kol2, condit2, pc):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol])):
+        if data[Kol1][n] == condit1 and data[Kol2][n] == condit2 and data["POSTCODE_VAN"][n][0:4] == pc:
+            avg = avg + (data[Kol][n] * data["Aantal Aansluitingen"][n])
+            freq = freq + data["Aantal Aansluitingen"][n]
+    return avg / freq
+
+def Calcaveragekol(Kol, Kol1):
+    avglist = []
+    allkol1 = Showall(Kol1)
+    for thing in allkol1:
+        avgg = Calcaverageif(Kol1, "Jaar", thing)
+        avglist.append(avgg)
+    return avglist
+
+def Calcaveragekolif(Kol, Kol1, Kol2, condit):
+    avglist = []
+    allkol1 = Showall(Kol1)
+    for thing in allkol1:
+        avgg = Calcaverageifif(Kol, "Jaar", thing, Kol2, condit)
+        avglist.append(avgg)
+    return avglist
+
+def Calcaveragepc(Kol, Kol1, PCs, start, end):
+    avglist = []
+    for pc in PCs:
+        avg = 0
+        freq = 0
+        for n in range(len(data[Kol])):
+            if data[Kol1][n][start:end] == pc:
+                avg = avg + data[Kol][n]
+                freq = freq + 1
+        avglist.append(avg / freq)
+    return avglist
+
+def CalcaveragepcifAns(Kol, Kol1, PCs, start, end, ifc, condit):
+    avglist = []
+    for pc in PCs:
+        avg = 0
+        freq = 0
+        for n in range(len(data[Kol])):
+            if data[Kol1][n][start:end] == pc and data[ifc][n] == condit:
+                avg = avg + (data[Kol][n] * data["Aantal Aansluitingen"][n])
+                freq = freq + data["Aantal Aansluitingen"][n]
+        avglist.append(avg / freq)
+    return avglist
+
+def CalcaverageififAns(Kol, ifc, condit, ifc2, condit2):
+    avg = 0
+    freq = 0
+    for n in range(len(data[Kol])):
+        if data[ifc][n] == condit and data[ifc2][n] == condit2:
+            avg = avg + (data[Kol][n] * data["Aantal Aansluitingen"][n])
+            freq = freq + data["Aantal Aansluitingen"][n]
+    return avg / freq
+
+def Calcaveragepcif(Kol, Kol1, PCs, start, end, ifc, condit):
+    avglist = []
+    for pc in PCs:
+        avg = 0
+        freq = 0
+        for n in range(len(data[Kol])):
+            if data[Kol1][n][start:end] == pc and data[ifc][n] == condit:
+                avg = avg + data[Kol][n] 
+                freq = freq + 1
+        avglist.append(avg / freq)
+    return avglist
+
+def Calcaveragepcifjaarans(Kol, Kol1, PCs, start, end, ifc, condit, jaarr):
+    avglist = []
+    for pc in PCs:
+        avg = 0
+        freq = 0
+        for n in range(len(data[Kol])):
+            if data[Kol1][n][start:end] == pc and data[ifc][n] == condit and data["Jaar"][n] == jaarr:
+                avg = avg + (data[Kol][n] * data["Aantal Aansluitingen"][n])
+                freq = freq + data["Aantal Aansluitingen"][n]
+        avglist.append(avg / freq)
+    return avglist
+
+def Countallif(Kol, Kol1, Condit1):
+    Tot = 0
+    for n in range(len(data[Kol])):
+        if data[Kol1][n] == Condit1:
+            Tot = Tot + data[Kol][n]
+    return Tot
+
+
+def Showall(Kol):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n] not in members:
+            members.append(data[Kol][n])
+    return members
+
+def Showallpartif(Kol, Kol1, condit1, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members and data[Kol1][n] == condit1:
+            members.append(data[Kol][n][start:end])
+    return members
+
+def Showallpartifif(Kol, Kol1, condit1, Kol2, condit2, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members and data[Kol1][n] == condit1 and data[Kol2][n] == condit2:
+            members.append(data[Kol][n][start:end])
+    return members
+
+def Showallpart(Kol, start, end):
+    members = []
+    for n in range(len(data[Kol])):
+        if data[Kol][n][start:end] not in members:
+            members.append(data[Kol][n][start:end])
+    return members
+
+def Standaardafwijking(Kol):
+    avg = Calcaverage(Kol)
+    std = 0
+    for n in range(len(data[Kol])):
+        std = std + (avg - data[Kol][n])**2
+    sa = std/len(data[Kol])
+    return sa**0.5
+
+def TVariantie(values):
+    var = TStandaardafwijking(values)
+    return var**2
+
+def TCalcaverage(values):
+    avg = 0
+    for n in range(len(values)):
+        avg = avg + values[n]
+    return avg / len(values)
+
+def TStandaardafwijking(values):
+    avg = TCalcaverage(values)
+    std = 0
+    for n in range(len(values)):
+        std = std + (avg - values[n])**2
+    sa = std/len(values)
+    return sa**0.5
+
+def makegraph(xas, yas, Titel, xdata, ydata, naam, figuren):
+    plt.figure(figuren)
+    plt.plot(ydata, xdata)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+def makescatter(xas, yas, Titel, xdata, ydata, naam, figuren):
+    plt.figure(figuren)
+    plt.scatter(ydata, xdata)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+def makegraphscale(xas, yas, Titel, xdata, ydata, naam, figuren, ymin, ymax):
+    plt.figure(figuren)
+    plt.plot(ydata, xdata)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    axes = plt.gca()
+    axes.set_ylim([ymin,ymax])
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+def makebarscale(xas, yas, Titel, x, y, naam, figuren, width, kleur, ymin, ymax):
+    plt.figure(figuren)
+    plt.bar(x, y, width, color=kleur)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    axes = plt.gca()
+    axes.set_ylim([ymin,ymax])
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+def makebar(xas, yas, Titel, x, y, naam, figuren, width, kleur):
+    plt.figure(figuren)
+    plt.bar(x, y, width, color=kleur)
+    plt.xlabel(xas)
+    plt.ylabel(yas)
+    plt.title(Titel)
+    savef = naam + ".png"
+    plt.savefig(savef)
+
+
+#def getpostcodes():
+    #with open(gempostcode.csv, w) as fOut:
+
+#print(Calcaverage("SJV"))
+#Calcaverageif("SJV", "Jaar", "2017")
+#Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2017)
+#Calcaverageif("Gemiddeld aantal telwielen", "PRODUCTSOORT", "ELK")
+#print(Showall("Jaar"))
+#print(TStandaardafwijking([3,7998767675,6453533,65,999,6442,0]))
+#print(Calcaverageifif("SJV", "PRODUCTSOORT", "ELK", "Jaar", 2009))
+#print(Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"))
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelksjvperjaar", 1)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemgassjvperjaar", 2)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "ELK"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+#makegraph("Jaren", "Gemiddeld SJV", "Gemiddeld elektrisch en gas SJV per jaar", Calcaveragekolif("SJV", "Jaar", "PRODUCTSOORT", "GAS"), Showall("Jaar"), "Gemelkgassjvperjaar", 3)
+#print(Calcaveragepc("SJV", "POSTCODE_VAN", Showallpart("POSTCODE_VAN", 0, 4), 0, 4))
+#makebar("postcodes", "gemiddeld SJV", "gemiddeld SJV per postcode", Showallpart("POSTCODE_VAN", 0, 4) , Calcaveragepc("SJV", "POSTCODE_VAN", Showallpart("POSTCODE_VAN", 0, 4), 0, 4), "barpostcodes", 4, 1, "blue")
+#makebar("postcodes", "gemiddeld SJV", "gemiddeld SJV per postcode", Showallpart("POSTCODE_VAN", 0, 4) , CalcaveragepcifAns("SJV", "POSTCODE_VAN", Showallpart("POSTCODE_VAN", 0, 4), 0, 4, "PRODUCTSOORT", "ELK"), "barpostcodeselk", 4, 1, "blue")
+#print(data["Aantal Aansluitingen"][5])
+#print(Showallpartif("POSTCODE_VAN", "Jaar", 2009, 0, 4))
+#print(Showallpartifif("POSTCODE_VAN", "Jaar", 2017, "PRODUCTSOORT", "GAS", 0, 4)[29])
+
+#jaarlist = Showall("Jaar")
+#nummer = 0
+#avgalllist = []
+#for jaarr in jaarlist:
+#    avgjaarlist = []
+#    nummer = nummer + 1
+#    jaarrr = str(jaarr)
+#    jaaravg = CalcaverageififAns("SJV", "Jaar", jaarr, "PRODUCTSOORT", "GAS")
+#    for urw in range(len(Showallpartifif("POSTCODE_VAN", "Jaar", jaarr, "PRODUCTSOORT", "GAS", 0, 4))):
+#        avgjaarlist.append(jaaravg)
+#    naam = "gemiddeld SJV gas per aansluiting in " + jaarrr
+#    titel = "gasjaarpost" + jaarrr + ".png"
+#    makebarscale("postcodes", "gemiddeld SJV", naam, Showallpartifif("POSTCODE_VAN", "Jaar", jaarr, "PRODUCTSOORT", "GAS", 0, 4) , Calcaveragepcifjaarans("SJV", "POSTCODE_VAN", Showallpartifif("POSTCODE_VAN", "Jaar", jaarr, "PRODUCTSOORT", "GAS", 0, 4), 0, 4, "PRODUCTSOORT", "GAS", jaarr), titel, nummer, 1, "blue", 0, 15000)
+#    makegraphscale("postcodes", "gemiddeld SJV", naam, avgjaarlist, Showallpartifif("POSTCODE_VAN", "Jaar", jaarr, "PRODUCTSOORT", "GAS", 0, 4), titel, nummer, 0, 15000)
+#    avgalllist.append(jaaravg)
+#makegraph("Jaren", "Gemiddeld SJV", "gemiddeld SJV gas per jaar", avgalllist, Showall("Jaar"), "Gemgassjvperjaar", 100)
+
+#print(Calcaveragepcifjaarans("SJV", "POSTCODE_VAN", Showallpartif("POSTCODE_VAN", "Jaar", 2010, 0, 4), 0, 4, "PRODUCTSOORT", "ELK", 2010))
+#print(Calcaverageififpc("SJV", "PRODUCTSOORT", "GAS", "Jaar", 2017, "1047"))
+#makebarscale("Jelle", "hoi", "idk", [1,2,3,4,5,6,8,9,15], [2,3,4,5,6,7,8,9,10], "testplaatje", 5, 1, "blue", 0, 20)
+#print(CalcaverageifAns("SJV", "Jaar", 2011))
+#makegraph("SJV", "Temperatuur", "gasverbuik in winter", [1.1,4.1,2.3,6.0,4.1,2.9,6.3,3.8,3.7], [2890,2865,2815,2785,2775,2715,2685,2515,2500], "warmofkoudwinter", 1)
+
+sjvlist = []
+for jaar in Showall("Jaar"):
+    if jaar != 2009:
+        jaar2 = Calcaverageifif("SJV", "PRODUCTSOORT", "GAS", "Jaar", jaar)
+        jaar1 = Calcaverageifif("SJV", "PRODUCTSOORT", "GAS", "Jaar", jaar - 1)
+        sjvlist.append((1/12 * jaar1) + (1/6 * jaar2))
+#makescatter("SJV", "Temperatuur", "gasverbuik in winter", [2.2,1.1,2.3,4.1,2.9,6.0,4.1,6.3,3.8], sjvlist, "warmofkoudwinter", 1)
+x = sjvlist
+y = [2.2,1.1,2.3,4.1,2.9,6.0,4.1,6.3,3.8]
+
+output_file("tempwinterscat.html")
+
+# Create a figure
+f = figure()
+
+## Add a Title to the plot (We essentially use css properties here)
+# You can find all function of f.title, using dir(f.title)
+f.title.text="SJV gebruik in de winter"
+f.title.text_font_size="25px"
+f.title.align="center"
+
+## Add some axis information (after all, a plot without axis descriptions is nothing more than abstract art)
+f.xaxis.axis_label="SJV Gebruik in de winter"
+f.yaxis.axis_label="Temperatuur in de winter"
+
+f.x_range=DataRange1d(start=320, end=380)
+f.y_range=DataRange1d(start=0, end=7)
+
+# Maybe add some different colors for the labels and the digits as well
+# Note how we use f.axis, to apply to both the x and y axis.
+f.axis.axis_label_text_color="blue"
+f.axis.major_label_text_color="red"
+
+f.toolbar.tools = [PanTool(), ResetTool(), WheelZoomTool(), HoverTool(), LassoSelectTool(), BoxSelectTool()]
+
+source = ColumnDataSource(data=dict(
+    x=sjvlist,
+    y=[2.2,1.1,2.3,4.1,2.9,6.0,4.1,6.3,3.8],
+    jaar=["2008-2009","2009-2010","2010-2011","2011-2012","2012-2013","2013-2014","2014-2015","2015-2016","2016-2017"],
+))
+
+
+hover = f.select_one(HoverTool)
+hover.point_policy = "follow_mouse"
+hover.tooltips = [
+    ("Jaar", "@jaar"),
+]
+# And let us just move it to the top instead of the side.
+f.toolbar_location='above'
+
+# And we show the image again.
+show(f)
+
+# Plot the line
+f.circle(x, y , size=4, fill_alpha=4)
+
+show(f)
+
+
+#Aantalans = []
+#for jaar in Showall("Jaar"):
+#    Ans = Countallif("Aantal Aansluitingen", "Jaar", jaar)
+#    Aantalans.append(Ans)
+#print(Aantalans)
+#print(Showall("Jaar"))
+#makegraph("Jaar", "Aantal Aansluitingen", "Aantal Aansluitingen", Aantalans, Showall("Jaar"), "aansluitliander", 1)
+
+#for jaar in Showall("Jaar"):
+#    q = 0
+#    for n in range(len(data["Jaar"])):
+#        if data["Jaar"][n] == jaar:
+#            q = q + 1
+#    print(q)
